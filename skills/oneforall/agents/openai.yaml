@@ -1,0 +1,8 @@
+interface:
+  display_name: "OneForAll"
+  short_description: "Find skills that help; skip the busywork"
+  icon_small: "./assets/oneforall-logo-final.png"
+  icon_large: "./assets/oneforall-logo-final.png"
+  default_prompt: "Use $oneforall to assess this project task, find specialist skills only where they help, and complete the work."
+policy:
+  allow_implicit_invocation: true
