@@ -44,6 +44,11 @@ Use actual project versions in queries when that matters. Search terms are examp
 - [Anthropic skills collection](https://github.com/anthropics/skills)
 - [Anthropic skill-creator](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md)
 
+**Superpowers and Ponytail — how to work, not what to find.** The work principles in SKILL.md adapt Superpowers' process discipline (understand, plan, test, debug by root cause, verify before claiming, test skills) and Ponytail's smallest-complete-change ladder and never-cut list. Their skills are also good recommendation candidates when a project needs the full procedure. Details: [work-principles.md](work-principles.md).
+
+- [Superpowers](https://github.com/obra/superpowers)
+- [Ponytail](https://github.com/dietrichgebert/ponytail)
+
 **Agent Skills specification — portable structure.** Use a lowercase folder/name, required frontmatter, focused instructions, and linked references as needed.
 
 - [Agent Skills specification](https://agentskills.io/specification)

@@ -9,16 +9,16 @@
 ต้องมี Node.js/npm และ Git สำหรับ Codex ใช้คำสั่งนี้:
 
 ```sh
-npx skills add thefogusz/OneForAll --skill oneforall --agent codex --global
+npx skills add thefogusz/OneForAll --skill oneforall head-chef --agent codex --global
 ```
 
 สำหรับ Claude Code เปลี่ยน `codex` เป็น `claude-code` หรือติดตั้งให้ทั้งคู่ในครั้งเดียว:
 
 ```sh
-npx skills add thefogusz/OneForAll --skill oneforall --agent codex claude-code --global
+npx skills add thefogusz/OneForAll --skill oneforall head-chef --agent codex claude-code --global
 ```
 
-`--skill oneforall` เลือกเฉพาะสกิลที่ใช้ทำงาน ส่วน `--global` ทำให้ใช้ได้ในทุกโปรเจกต์ หากต้องการติดตั้งเฉพาะโปรเจกต์ ให้รันจากโฟลเดอร์นั้นและเอา `--global` ออก
+`--skill oneforall head-chef` ติดตั้งทั้งสองสกิลใน repo นี้ ถ้าต้องการตัวเดียวให้ใส่แค่ `oneforall` หรือ `head-chef` ส่วน `--global` ทำให้ใช้ได้ในทุกโปรเจกต์ หากต้องการติดตั้งเฉพาะโปรเจกต์ ให้รันจากโฟลเดอร์นั้นและเอา `--global` ออก
 
 ตัวติดตั้งอาจใช้ symlink เพื่อให้หลาย agent อ่านไฟล์ชุดเดียวกัน หากต้องการคัดลอกไฟล์แทน ให้เพิ่ม `--copy`
 
@@ -56,8 +56,11 @@ Codex บางชุดติดตั้งพบสกิลจาก `$CODEX
 <!-- oneforall:start -->
 ## OneForAll
 
-Before substantive project work, quietly assess whether current abilities
-and project guidance are sufficient. If they are, do the task directly.
+On substantive project work, follow the work principles in the installed
+oneforall skill: understand first, smallest complete change, root cause
+before fixes, evidence before claims. Quietly assess whether current
+abilities and project guidance are sufficient. If they are, do the task
+directly.
 Follow the installed oneforall skill when a concrete gap or a useful
 specialist workflow warrants discovery, or when I request skill research.
 On that route, research technical information and skills separately.

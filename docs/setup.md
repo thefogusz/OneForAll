@@ -9,16 +9,16 @@ Choose the installation for Codex or Claude Code. Both use the same skill files,
 You'll need Node.js/npm and Git. For Codex, run:
 
 ```sh
-npx skills add thefogusz/OneForAll --skill oneforall --agent codex --global
+npx skills add thefogusz/OneForAll --skill oneforall head-chef --agent codex --global
 ```
 
 For Claude Code, replace `codex` with `claude-code`, or install for both at once:
 
 ```sh
-npx skills add thefogusz/OneForAll --skill oneforall --agent codex claude-code --global
+npx skills add thefogusz/OneForAll --skill oneforall head-chef --agent codex claude-code --global
 ```
 
-`--skill oneforall` selects the controller skill. `--global` makes it available across projects. For a project-only installation, run the command from that project's directory and omit `--global`.
+`--skill oneforall head-chef` installs both skills from this repository; list only `oneforall` or only `head-chef` to install one. `--global` makes it available across projects. For a project-only installation, run the command from that project's directory and omit `--global`.
 
 The installer may use symlinks so multiple agents can share the same files. Add `--copy` if you prefer separate copies.
 
@@ -38,7 +38,7 @@ Some Codex installations discover skills in `$CODEX_HOME/skills` or `~/.codex/sk
 
 ## Install manually
 
-This method doesn't need Node.js. Clone or download the repository, then copy the entire `skills/oneforall/` folder to your agent's personal skill directory from the table above. Keep `SKILL.md`, `references/`, `assets/`, and `agents/` together.
+This method doesn't need Node.js. Clone or download the repository, then copy the entire `skills/oneforall/` folder, and `skills/head-chef/` if you want it, to your agent's personal skill directory from the table above. Keep each folder's files together.
 
 If OneForAll is already installed, back up or compare the existing files before replacing them. Start a new session if the skill isn't visible yet.
 
@@ -56,8 +56,11 @@ Append this block and preserve the other instructions in the file:
 <!-- oneforall:start -->
 ## OneForAll
 
-Before substantive project work, quietly assess whether current abilities
-and project guidance are sufficient. If they are, do the task directly.
+On substantive project work, follow the work principles in the installed
+oneforall skill: understand first, smallest complete change, root cause
+before fixes, evidence before claims. Quietly assess whether current
+abilities and project guidance are sufficient. If they are, do the task
+directly.
 Follow the installed oneforall skill when a concrete gap or a useful
 specialist workflow warrants discovery, or when I request skill research.
 On that route, research technical information and skills separately.

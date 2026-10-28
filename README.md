@@ -4,120 +4,156 @@
 
 <h1 align="center">OneForAll</h1>
 <p align="center"><a href="README.md">English</a> | <a href="README.th.md">ภาษาไทย</a></p>
-<p align="center">Help your agent discover and adapt skills for the project you're working on.</p>
+<p align="center"><strong>One set of working rules for every task. Skills that belong to each project. The right model for each step.</strong></p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/agents-Claude%20Code%20%7C%20Codex-111111?style=flat-square" alt="Works with Claude Code and Codex">
+  <img src="https://img.shields.io/badge/skills-oneforall%20%2B%20head--chef-111111?style=flat-square" alt="Two skills">
+  <img src="https://img.shields.io/badge/tested%20on-6%20kinds%20of%20work-111111?style=flat-square" alt="Tested on six kinds of work">
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick start</a> ·
   <a href="docs/setup.md">Setup guide</a> ·
-  <a href="skills/oneforall/SKILL.md">Skill source</a> ·
+  <a href="skills/oneforall/SKILL.md">OneForAll source</a> ·
+  <a href="skills/head-chef/SKILL.md">head-chef source</a> ·
   <a href="docs/verification.md">Testing notes</a>
 </p>
 
-Someone may already have written a skill for the problem you're working on. Finding it, then deciding whether it fits your codebase, takes time.
+---
 
-**OneForAll** helps your agent with that. When you start a fix or build something new, it considers whether an existing skill could make the work easier. When further research would help, it looks for relevant techniques and skills, adapts them to your project, and saves useful procedures for later tasks.
+Coding agents are capable, but they waste effort in predictable ways: they rebuild what the project already has, claim "fixed" without checking, search for skills they don't need, and run the most expensive model on work a script could do.
 
-If the agent already has what it needs, it gets on with the work. Routine tasks don't need another search, and ordinary conversations shouldn't turn into discussions about skills.
+OneForAll is a pair of [Agent Skills](https://agentskills.io/specification) that close those gaps for any kind of project work: code, documents, video, design, data, research, and operations.
 
-## Getting started
+| Skill | What it gives your agent |
+| --- | --- |
+| **[oneforall](skills/oneforall/SKILL.md)** | **Eight work principles** for every task, and **project-scoped skill discovery**: find, adapt, or write a skill only when it removes a real difficulty, and keep it in that project. |
+| **[head-chef](skills/head-chef/SKILL.md)** | **Model routing** for recurring jobs: the strongest model writes the recipe once, code and cheaper models run it every time, and every downgrade is proven on real past inputs. |
 
-Install through Vercel's [Skills CLI](https://github.com/vercel-labs/skills). You'll need Node.js/npm and Git. Choose the command for your agent:
+The two are independent. Install both, or only the one you need.
+
+## Quick start
+
+You'll need Node.js/npm and Git.
 
 ```sh
-# Codex
-npx skills add thefogusz/OneForAll --skill oneforall --agent codex --global
-
-# Claude Code
-npx skills add thefogusz/OneForAll --skill oneforall --agent claude-code --global
+# Claude Code and Codex together
+npx skills add thefogusz/OneForAll --skill oneforall head-chef --agent claude-code codex --global
 ```
 
-Then invoke it with a task:
+On Windows PowerShell, use `npx.cmd` if script execution is disabled. Then give your agent a task:
 
 ```text
-Codex:       $oneforall Fix this project's export so it handles Thai text correctly.
 Claude Code: /oneforall Fix this project's export so it handles Thai text correctly.
+Codex:       $oneforall Fix this project's export so it handles Thai text correctly.
 ```
 
-To let your agent decide when to use OneForAll across projects, add the [automatic-use instructions](docs/setup.md#enable-automatic-use) once. Start a new session if a newly installed skill isn't visible yet.
+To have the agent apply OneForAll on its own, add the [automatic-use block](docs/setup.md#enable-automatic-use) to your personal instructions once. The [setup guide](docs/setup.md) covers single-project installs, manual installs, and other agents.
 
-The [setup guide](docs/setup.md) also covers manual installation, installation for a single project, and other agents.
-
-## How it works
-
-OneForAll starts with the task and the guidance already available in the project. If those are sufficient, the agent uses them directly. It researches further when a specialist technique or workflow could help, for example with repetitive manual work, unfamiliar tools, or a problem that keeps resisting a fix.
-
-When research is warranted, it follows two separate tracks:
-
-- **Technical research:** read primary documentation and compare it with the project's tools, versions, and requirements.
-- **Skill research:** check available skills, skills.sh, and source repositories, then read promising skills before choosing an approach.
-
-A suitable existing skill can be used as it is. Useful techniques from several sources can be adapted to the project. If no skill fits but the research produces a procedure worth reusing, OneForAll can write a project skill from those findings.
+## How it fits together
 
 ```mermaid
-flowchart TD
-    A[Start a task] --> B{Would another skill help?}
-    B -- Not needed --> C[Use existing capabilities and guidance]
-    B -- Useful --> D[Research technical information and skills separately]
-    D --> E[Use, adapt, or create a project skill]
-    C --> F[Complete the work and check the result]
-    E --> F
+flowchart LR
+    T[Any task] --> P[Work principles]
+    P --> Q{Does a skill or<br/>research help?}
+    Q -- No --> W[Do the work]
+    Q -- Yes --> R[Research docs and skills separately]
+    R --> S[Use, adapt, or write a project skill]
+    S --> W
+    T -. recurring model job .-> H[head-chef: route each step<br/>to the cheapest capable model]
+    H --> S
+    W --> C[Check the result,<br/>report what wasn't verified]
 ```
 
-The task you asked for remains the priority. Skills are created or updated only when there is something useful to retain, and untested guidance is kept distinct from verified results.
-
-You can also request discovery directly: "Which skills could help reduce repetitive work in this project?"
-
-## Model routing for recurring jobs
-
-When a task builds or audits something that calls a model over and over (a scheduled job, a pipeline, a multi-agent workflow), OneForAll follows a [routing guide](skills/oneforall/references/model-routing.md). The strongest model writes the recipe once, and each step then runs on the cheapest station that can do it: plain code, an optional classifier, then small, mid, and strong models. A cheaper model replaces the current one only after replaying real past inputs, and the change ships as a switch that can be reversed.
-
-The guide names no models. Each time, it reads the models the host currently offers, ranks them by price and the vendor's own positioning, and assigns the tiers from that ranking, so it keeps working after Claude or Codex ship new models. A new model triggers a replay check before a job switches to it. For review, it checks whether the other family's CLI (Codex or Claude Code) is installed and signed in, and offers to use it; it never installs or signs in on its own. If none is connected or you decline, it creates a fresh reviewer agent that sees only the output and the checks.
-
-## Skill recommendations
-
-During research, OneForAll may find a third-party skill worth adding to the project. It can suggest it with a source link, the reason it would help, and any required tools or costs. Usually one recommendation is enough; it may offer up to three when there are useful alternatives.
-
-Installing a third-party skill waits for your choice. The main task continues in the meantime, including any useful project skills OneForAll can write from the research.
-
-## Project skills
-
-OneForAll is the shared controller. The knowledge it develops while working stays in the project. For example, in Codex:
+The installed skills are shared across all your projects. What they learn is not: each project's skills live in that project's own `.claude/skills/` or `.agents/skills/` folder.
 
 ```text
-project-a/
-└── .agents/skills/
-    └── project-a-csv-export/
-        └── SKILL.md
+~/.claude/skills/  or  ~/.agents/skills/      installed once, shared
+├── oneforall/
+└── head-chef/
 
-project-b/
-└── .agents/skills/
-    └── project-b-api-checks/
-        └── SKILL.md
+video-project/.claude/skills/                  belongs to this project only
+├── video-project-catcut-export/
+└── video-project-nightly-render/              a head-chef recipe card
+
+web-app/.agents/skills/
+└── web-app-api-checks/
 ```
 
-When you switch projects, it assesses the new project's code, tools, and requirements. Each project keeps its own guidance.
+## Work principles
 
-New skills go in `.agents/skills/` for Codex or `.claude/skills/` for Claude Code. OneForAll checks both locations before creating a skill. If a suitable one already exists, it reads that file directly, even when you have changed agents.
+Every substantive task follows eight short principles, adapted from [Superpowers](https://github.com/obra/superpowers) and [Ponytail](https://github.com/dietrichgebert/ponytail):
 
-Skills managed by OneForAll carry `metadata.oneforall-managed: "true"` so they can be maintained over time. Skills you wrote yourself are used as they are unless you ask for changes.
+| # | Principle | In practice |
+| --- | --- | --- |
+| 1 | **Understand before acting** | Read what the change touches, including the project's own skills, and list every place it must reach. |
+| 2 | **Smallest complete solution** | Reuse what exists (code, templates, presets, project skills) before making anything new. Small is not partial. |
+| 3 | **Never cut** | Validation, data-loss protection, security, privacy, accessibility, licensing, or what you asked for. |
+| 4 | **Root cause before fixes** | Fix it once at the source. After two failed fixes, rethink instead of patching. |
+| 5 | **Check what can break, and keep the check** | Money or branching logic leaves a test file behind, even when the project has no test suite yet. |
+| 6 | **Small verifiable steps** | Multi-step work is split into steps that each end in a check. |
+| 7 | **Evidence before claims** | "Done" only after the check has run in this session; anything unverified is named. |
+| 8 | **Mark deliberate shortcuts** | Each with its limit and when to revisit it. |
 
-## Compatibility and testing
+What counts as a check depends on the work: a test for code, running every documented command for docs, opening rendered frames for video, reconciling totals for data, opening primary sources for research. The full table is in the [skill](skills/oneforall/SKILL.md#work-principles-for-every-task).
+
+Already using Superpowers or Ponytail? Their full skills still apply, and the stricter rule wins. [What was adopted from each, and why](skills/oneforall/references/work-principles.md).
+
+## Project skills, only when they earn it
+
+Someone may already have written a skill for your problem. OneForAll checks, but only when that could actually help: an unfamiliar tool, repetitive manual work, or a problem that keeps resisting a fix. Routine tasks go straight to the work.
+
+When research is warranted, it runs two separate tracks:
+
+- **Technical research:** primary documentation, compared with the project's actual versions and tools.
+- **Skill research:** local skills, [skills.sh](https://skills.sh/), and source repositories, read before choosing.
+
+A fitting skill is used as it is. Otherwise OneForAll writes a short project skill from the findings, but only after naming the concrete failure the skill prevents, and it validates the file before reporting it. Third-party skills are suggested, never installed without your choice. Skills it manages carry `metadata.oneforall-managed: "true"`; skills you wrote are left as they are.
+
+## head-chef: the right model for each step
+
+For jobs that call a model again and again (scheduled jobs, pipelines, multi-agent workflows):
+
+```text
+code  →  classifier (optional)  →  small model  →  mid model  →  strong model
+          stop at the first station that can do the step
+```
+
+- **No hardcoded models.** It reads what the host offers today, ranks by price and the vendor's positioning, and assigns tiers from that, so it keeps working when Claude or Codex ship new models.
+- **Proven downgrades.** A cheaper model takes over a step only after replaying real past inputs and matching the current model's own consistency.
+- **Guardrails.** Budget caps, a kill switch, an escalation log, and a weekly sample review after shipping.
+- **Independent review.** It checks whether the other family's CLI (Codex or Claude Code) is installed and signed in and offers it; otherwise a fresh reviewer agent sees only the output and the checks.
+
+## Tested on six kinds of work
+
+Independent agents were given both skills and a task with a hidden trap, without being told what was being tested. On 2026-10-29:
+
+| Work | Trap | Result |
+| --- | --- | --- |
+| Code bug | Wrong discount used by two callers | ✅ Fixed once in the shared function; test file seen failing, then passing *(second run, after a fix to the skill)* |
+| Documentation | Old script name repeated in the FAQ | ✅ Both places fixed; the documented command was run |
+| Video | Brief for a 6-second 720p teaser | ✅ Source kept; duration, size, and audio probed; frames opened and viewed *(second run)* |
+| Data | A duplicate order and a blank amount | ✅ Both found and reported with their effect on the totals; no numbers from the model |
+| Quick question | "What does this project do?" | ✅ Answered directly, with no files, searches, or skill talk |
+| Recurring job | A nightly digest sending everything to the top model | ✅ Code-first routing card with budget, kill switch, and replay plan; skill file validated *(second run)* |
+
+The first run exposed four weak spots: no lasting test, frames not viewed, an invalid skill file, and an unresolved model list. All four were fixed in the skills, and the affected tasks were re-run. Details and limits: [testing notes](docs/verification.md).
+
+## Compatibility
 
 | Agent | Status |
 | --- | --- |
+| Claude Code | Installation tested. Six task types exercised by agents following the skills. Native auto-invocation not yet observed end to end. |
 | Codex | Installation and sample tasks tested. |
-| Claude Code | Installation tested and setup checked against official documentation. Execution in Claude Code has not been tested. |
-| Other Agent Skills clients | Guidance for adapting paths and invocation is included. Individual clients have not been tested. |
+| Other Agent Skills clients | Path and invocation guidance included; not tested. |
 
-OneForAll is a set of instructions in `SKILL.md` that uses the agent's existing tools. Automatic use depends on the agent and its configuration. See the [testing notes](docs/verification.md) for the scope of each check.
+No background service or extra API subscription is needed. Research uses your agent's existing web tools; if they're unavailable, the agent says so and works from what it can verify.
 
-Research needs the agent's web tools. If access is unavailable, the agent should say so and work only from evidence it can verify. Model and tool costs follow your existing services; OneForAll requires no background service or additional API subscription.
+## Credits
 
-## Design sources
-
-OneForAll draws on skill discovery from [Vercel find-skills](https://github.com/vercel-labs/skills/blob/main/skills/find-skills/SKILL.md), reusable lessons from [AutoSkill](https://github.com/ECNU-ICALK/AutoSkill), and skill-authoring guidance from [OpenAI](https://github.com/openai/skills) and [Anthropic](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md).
-
-These ideas inform OneForAll's workflow; you don't need to install all of those projects. Details are in the [research references](skills/oneforall/references/research-sources.md). The logo was generated with AI.
+Working principles adapted from [Superpowers](https://github.com/obra/superpowers) by Jesse Vincent and [Ponytail](https://github.com/dietrichgebert/ponytail) by DietrichGebert (both MIT). Skill discovery draws on [Vercel find-skills](https://github.com/vercel-labs/skills/blob/main/skills/find-skills/SKILL.md) and [AutoSkill](https://github.com/ECNU-ICALK/AutoSkill); skill authoring on [OpenAI](https://github.com/openai/skills) and [Anthropic](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md) guidance. None of them needs to be installed. [Research references](skills/oneforall/references/research-sources.md). The logo was generated with AI.
 
 ## Reporting issues
 
-If OneForAll activates at the wrong time, creates duplicate skills, or saves guidance that doesn't work, please [open an issue](https://github.com/thefogusz/OneForAll/issues) with the task, agent, and observed result. Remove private information before sharing examples.
+If a skill activates at the wrong time, creates duplicate skills, or saves guidance that doesn't work, please [open an issue](https://github.com/thefogusz/OneForAll/issues) with the task, agent, and what happened. Remove private information first.

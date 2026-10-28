@@ -1,0 +1,6 @@
+interface:
+  display_name: "head-chef"
+  short_description: "Strong model writes the recipe; cheaper ones cook"
+  default_prompt: "Use $head-chef to route each step of this recurring model job to the cheapest capable station."
+policy:
+  allow_implicit_invocation: true

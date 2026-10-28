@@ -1,6 +1,20 @@
-# Model routing for recurring jobs
+---
+name: head-chef
+description: Route each step of a recurring model job to the cheapest station that can do it - code, an optional classifier, then small, mid and strong models - with tiers resolved from the host's current model lineup. Use when building, downgrading, or auditing a scheduled job, pipeline, repeatedly run skill, or multi-agent workflow that calls a model, or when automated jobs strain cost or usage limits. Works on Claude Code and Codex. Not for one-off interactive work.
+---
 
-Read this when the task builds, downgrades, or audits work that calls a model repeatedly: a scheduled job, a pipeline step, a skill that runs many times, or a multi-agent workflow. One-off interactive work does not need it.
+# head-chef — the strong model writes the recipe, cheaper ones cook
+
+Use this when the task builds, downgrades, or audits work that calls a model repeatedly: a scheduled job, a pipeline step, a skill that runs many times, or a multi-agent workflow. One-off interactive work does not need it.
+
+## Quick start
+
+1. Split the job into steps (input → output).
+2. Give each step to the first station that can do it: code → classifier → prep → sous → head chef.
+3. Resolve which real model each tier means today ("Resolving tiers at run time").
+4. Have the head chef write the recipe card: scripts, prompts with schemas, code checks, replay set, escalation rule, budget.
+5. Prove any downgrade by replay, ship it as a reversible switch, and watch it with sampled reviews.
+6. Write the routing card into the job's doc.
 
 The idea: the strongest model writes the recipe once; cheaper models and plain code run it every time inside the limits that recipe sets. The cost may be money or a **shared usage allowance**. Scheduled calls to the top model draw on the same rate limits as interactive work, so a busy night of them can make other jobs fail.
 
@@ -34,7 +48,11 @@ This guide never names a model. Model lineups change faster than skills, so reso
 
 Drop anything marked deprecated, preview-only, or not available to this account. Never invent an ID or reuse one remembered from another conversation.
 
+If none of these sources can be read from the current session, don't stop at "unresolved". Use the host's documented tier aliases as a provisional mapping (on Claude Code: `haiku` = prep, `sonnet` = sous, `opus` = head chef), mark the card `tiers: provisional (aliases)`, and give the user the one command that lists the real models (e.g. `/model` on Claude Code) so the IDs can be pinned before any replay-proven step ships.
+
 **2. Rank by price, then by the vendor's own positioning.** Within one provider, list price per million tokens (input + output) is the most stable signal of tier: vendors price small/fast models low and flagships high. Break ties, or fill gaps when prices are hidden, with the vendor's description ("fast", "efficient" → lower; "most capable", "flagship", "frontier" → higher). Benchmarks are a tiebreaker only. A larger version number alone does not mean a higher tier.
+
+List price only sets the starting tiers. Once a replay has run, compare models by **measured cost per accepted output**: tokens actually used (including reasoning tokens) × price, plus retries and escalations, divided by outputs that passed the checks. A model that is cheap per token but thinks long, or fails checks often, can cost more than the tier above it.
 
 **3. Assign tiers from the ranking:**
 
@@ -71,7 +89,7 @@ Name the station in a comment wherever the model is set, so the next reader know
 
 The critic reviews a recipe, a prompt, or an output it did not write.
 
-**First, check what is connected.** Before choosing a critic, look for the other family's CLI with read-only commands only:
+**First, check what is connected.** Run this check whenever a recipe card is written or audited, not only when a review is about to happen: the commands are read-only and cheap, and the result belongs on the routing card. Look for the other family's CLI with read-only commands only:
 
 | Active host | Other family | Installed? | Signed in? |
 | --- | --- | --- | --- |
@@ -98,7 +116,7 @@ Prefer, in this order:
    Label the result a **same-family review** in the evidence note. It catches context bias and sloppiness, but shares the family's blind spots, so do not treat it as equal to a cross-family check on public or legal steps.
 3. **No subagent support → a separate pass** in the same session after a clean break: re-read only the artifact and checks, answer the same adversarial brief, and label it a **self-review**.
 
-Calling another family's CLI is an external tool call: use it only when it is already installed, signed in, and accepted by the user. Never install it or sign in automatically.
+Calling another family's CLI is an external tool call: use it only when it is already installed, signed in, and accepted by the user. Never install it or sign in automatically. Sending work to another provider shares it with that provider: remove secrets, credentials, and personal or customer data from what the critic receives, or use the fresh-agent fallback for material that must not leave the current provider.
 
 ## Cheaper without changing the cook
 
@@ -118,12 +136,15 @@ Try these before, or alongside, a downgrade. They risk less quality than swappin
    - Extraction to a schema, or a closed question? Prep tier.
    - Composition that follows a written recipe? Sous tier.
    - Head chef only for design, or where the recipe can't be written yet. That is a reason to write it, not to run the strong model forever.
-3. **The head chef writes the recipe card once**, stored with the job (a project skill, repo doc, or notes file):
+3. **The head chef writes the recipe card once**, stored with the job inside its own project, never in a global skill folder. A recurring job's recipe is project knowledge: save it as a project skill named `<project-slug>-<job>` in the project's native skill directory (`.claude/skills/` on Claude Code, `.agents/skills/` on Codex), checking both directories first and reusing a match in place. When OneForAll is installed, follow its naming, containment, and `metadata.oneforall-managed` rules. A repo doc or notes file is fine when the project has no skill directory. The card holds:
    - **Scripts** for every deterministic step.
    - **Prompt + output schema** for each model step. Inputs go in delimiters (e.g. `<<< >>>`) as data, never instructions. Delimiters only lower injection risk; the checks below are the real guard.
    - **Checks** run by code: required fields, counts, language, disclosures, word limits, numbers matching the script's numbers, and policy rules.
    - **Replay set:** at least 20 real past inputs with accepted outputs to start, growing toward ~90 as runs accumulate. Without it a step can't be downgraded later.
-   - **Escalation:** a check fails → retry once on the same model → head chef. Log which happened on every run.
+   - **No history yet?** Bootstrap the replay set by running the head chef on ~20 real inputs, reviewing the outputs, and marking them `provisional`. Replace them with accepted production outputs as they arrive. Never downgrade a step on provisional cases alone.
+   - **Escalation:** a check fails → retry once on the same model → head chef. Log every run as one JSON line, so the ceiling below is computed by code, not by reading:
+     `{"ts": "...", "job": "...", "step": "...", "model": "...", "outcome": "pass|retry_pass|escalated|failed", "in_tokens": 0, "out_tokens": 0}`
+   - **Budget guard:** a hard cap per run (calls or tokens) and per day for the job. Hitting it stops the job and alerts the owner instead of draining the shared allowance. A kill switch (env var or config line) disables the model steps without a deploy.
    - **Escalation ceiling:** more than ~10% of a week's runs reaching the head chef means the recipe is broken. Stop and send it back for a rewrite; don't let the strong model quietly cook every night.
    - **Strict stop fields:** a field that halts the pipeline (e.g. `blockers`) gets a schema description saying exactly that, and questions for the head chef get their own field. Otherwise a cheap model lists notes as blockers and halts the run.
    - **Output language** stated.
@@ -149,6 +170,7 @@ Try these before, or alongside, a downgrade. They risk less quality than swappin
    - g. For a yes/no step with a classifier available, replay it there too. Score AUC and pick the grey zone from a held-out half, not in-sample.
 4. **Keep the strong model, or a human read, where an error is public or legal:** defamation risk, numbers on a public site, broadcast or published scripts. Evidence beats the table: if a blind test shows the sous tier clearly below on a style judgement, the step stays until a better recipe passes a re-test. Use the food critic here.
 5. **Ship as a reversible switch:** an env var or config line with the old model as default. Confirm with the owner before changing anything live. Record the evidence note and rollback line where the team tracks open work.
+6. **Watch it after shipping.** A replay proves the step on past inputs; inputs drift and aliases upgrade. Each week, send a small random sample of production outputs (2–5%, at least 10) to the head chef or the food critic with the same acceptance checks, and track the escalation log. Roll back when the sample's costly-side errors or the escalation rate pass the bars set in 3f and the escalation ceiling.
 
 ## Routing card
 
@@ -165,5 +187,6 @@ Step                 Station      Model / tool (ID, date checked)   Check that g
 Tiers resolved <date> from <host list | models endpoint | pricing page>: prep=<id> sous=<id> head=<id> consultant=<id|none>
 Pinned: <steps on fixed IDs>   Aliased: <steps on aliases>
 Critic: <cross-family | same-family review | self-review>
+Budget: <per-run cap> / <per-day cap>   Kill switch: <env/config line>   Drift sample: <rate, reviewer>
 Evidence: <replay note path>   Rollback: <env/config line>   Escalation log: <path>
 ```
