@@ -9,7 +9,7 @@ metadata:
 
 Apply only to this repository, identified by its OneForAll controller under `skills/oneforall/`. Recheck the tree before reuse.
 
-- The distributable controller is `skills/oneforall/`. This maintenance skill is for contributors and is not needed by end users; installer examples must select `--skill oneforall`.
+- The distributable skills are `skills/oneforall/` (skill discovery) and `skills/head-chef/` (model routing for recurring jobs). Keep them independent: neither may require the other, and OneForAll may only recommend head-chef. This maintenance skill is for contributors and is not needed by end users; installer examples must select skills explicitly, e.g. `--skill oneforall head-chef`.
 - Keep README examples portable: `~`, `$CODEX_HOME`, and `<project>` must be explained. Exclude personal absolute paths, local instruction backups, transcripts, and discarded artwork from publication.
 - Write public documentation in natural, professional language. Use descriptive headings, explain the problem and usage directly, and keep testing detail in its dedicated page. Avoid forced jokes, slogans, and fist/combat metaphors; the logo is not a writing theme.
 - Keep English in the default README and documentation files, with Thai counterparts named `*.th.md`. Link each page to its counterpart, keep internal navigation in the selected language, and update both versions when behavior or setup changes. Preserve identical commands and configuration blocks across translations.

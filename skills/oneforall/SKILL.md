@@ -1,6 +1,6 @@
 ---
 name: oneforall
-description: Discover useful skills for project work when specialized guidance could help. Quietly assess capability gaps before fixes or new work; research and maintain project skills only when they add concrete value; route recurring model jobs to the cheapest capable model. Use when OneForAll is requested, not for casual chat or status updates.
+description: Discover useful skills for project work when specialized guidance could help. Quietly assess capability gaps before fixes or new work; research and maintain project skills only when they add concrete value. Use when OneForAll is requested, not for casual chat or status updates.
 ---
 
 # OneForAll
@@ -21,7 +21,6 @@ Inspect only enough task/project context to choose a route. Use available skill 
 | An existing applicable skill covers the task | Use it as needed. Do not search for replacements or rewrite it just to create activity. |
 | Unfamiliar/version-sensitive technique, repeated failure, recurring manual workflow, or a credible existing specialist skill could materially reduce effort or errors | Research the specific gap using both tracks below. State the concrete expected benefit when useful. |
 | User explicitly asks to find/research skills or improve the project's skill coverage | Perform that requested discovery, even if the immediate task is otherwise solvable. |
-| Task builds, downgrades, or audits a scheduled job, pipeline, repeatedly run skill, or multi-agent workflow that calls a model | Read [model-routing.md](references/model-routing.md) and route each step to the cheapest capable station. Save the job's routing card in its project skill or doc. |
 
 Complexity or the words "new feature" are not sufficient evidence by themselves. Do not invent a capability gap to justify this skill. Conversely, assess discoverability, not just ability: a ready-made workflow may materially help even when the agent could eventually build one itself. Continue to obey independent requirements to verify current facts; an ordinary documentation lookup does not automatically require a skill search.
 
@@ -84,6 +83,8 @@ Validate frontmatter, matching folder/name, relative links, and actual reference
 ## 5. Advise on missing project skills
 
 Recommend only when the selected research route reveals a useful missing capability for the current task or a clearly evidenced recurring project need. Starting a project does not require a recommendation audit. Use the local catalog and applicable project folders to avoid recommending what is already available.
+
+For example, when a task builds or audits a recurring job that calls a model and the companion `head-chef` skill from this repository is not available, it is a candidate recommendation.
 
 Usually offer one best option; use up to three when there is a meaningful choice. For each, briefly give the name/link, concrete benefit, and any material prerequisite or cost. Check why existing skills do not already cover it, read the source skill, and confirm absence before calling it missing. Label an unknown installation state honestly. No useful gap means no recommendation, not a padded list.
 

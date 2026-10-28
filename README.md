@@ -24,10 +24,10 @@ Install through Vercel's [Skills CLI](https://github.com/vercel-labs/skills). Yo
 
 ```sh
 # Codex
-npx skills add thefogusz/OneForAll --skill oneforall --agent codex --global
+npx skills add thefogusz/OneForAll --skill oneforall head-chef --agent codex --global
 
 # Claude Code
-npx skills add thefogusz/OneForAll --skill oneforall --agent claude-code --global
+npx skills add thefogusz/OneForAll --skill oneforall head-chef --agent claude-code --global
 ```
 
 Then invoke it with a task:
@@ -66,11 +66,13 @@ The task you asked for remains the priority. Skills are created or updated only 
 
 You can also request discovery directly: "Which skills could help reduce repetitive work in this project?"
 
-## Model routing for recurring jobs
+## Companion skill: head-chef
 
-When a task builds or audits something that calls a model over and over (a scheduled job, a pipeline, a multi-agent workflow), OneForAll follows a [routing guide](skills/oneforall/references/model-routing.md). The strongest model writes the recipe once, and each step then runs on the cheapest station that can do it: plain code, an optional classifier, then small, mid, and strong models. A cheaper model replaces the current one only after replaying real past inputs, and the change ships as a switch that can be reversed.
+This repository ships a second skill, [head-chef](skills/head-chef/SKILL.md), for the cost side of the same goal: every project gets the skills that fit it, and every recurring job runs on the cheapest model that does it well. The two are independent and can be installed together or separately.
 
-The guide names no models. Each time, it reads the models the host currently offers, ranks them by price and the vendor's own positioning, and assigns the tiers from that ranking, so it keeps working after Claude or Codex ship new models. A new model triggers a replay check before a job switches to it. For review, it checks whether the other family's CLI (Codex or Claude Code) is installed and signed in, and offers to use it; it never installs or signs in on its own. If none is connected or you decline, it creates a fresh reviewer agent that sees only the output and the checks.
+When a task builds or audits something that calls a model over and over (a scheduled job, a pipeline, a multi-agent workflow), head-chef has the strongest model write the recipe once. Each step then runs on the cheapest station that can do it: plain code, an optional classifier, then small, mid, and strong models. A cheaper model replaces the current one only after replaying real past inputs, the change ships as a switch that can be reversed, and a small weekly sample checks that quality holds. Each job's recipe is saved as a project skill, like the skills OneForAll creates, so it stays with that project. If OneForAll sees such a job and head-chef isn't installed, it may suggest it.
+
+head-chef names no models. Each time, it reads the models the host currently offers, ranks them by price and the vendor's own positioning, and assigns the tiers from that ranking, so it keeps working after Claude or Codex ship new models. A new model triggers a replay check before a job switches to it. For review, it checks whether the other family's CLI (Codex or Claude Code) is installed and signed in, and offers to use it; it never installs or signs in on its own. If none is connected or you decline, it creates a fresh reviewer agent that sees only the output and the checks.
 
 ## Skill recommendations
 
