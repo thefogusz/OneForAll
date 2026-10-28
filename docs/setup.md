@@ -1,54 +1,56 @@
-# คู่มือติดตั้ง
+# Setup guide
 
-เลือกติดตั้งสำหรับ Codex หรือ Claude Code ตามที่ใช้งาน ทั้งสองใช้สกิลชุดเดียวกัน แต่เก็บไฟล์และเรียกใช้ต่างกัน
+[English](setup.md) | [ภาษาไทย](setup.th.md)
 
-## ติดตั้งผ่าน Skills CLI
+Choose the installation for Codex or Claude Code. Both use the same skill files, with different locations and invocation commands.
 
-ต้องมี Node.js/npm และ Git สำหรับ Codex ใช้คำสั่งนี้:
+## Install with Skills CLI
+
+You'll need Node.js/npm and Git. For Codex, run:
 
 ```sh
 npx skills add thefogusz/OneForAll --skill oneforall --agent codex --global
 ```
 
-สำหรับ Claude Code เปลี่ยน `codex` เป็น `claude-code` หรือติดตั้งให้ทั้งคู่ในครั้งเดียว:
+For Claude Code, replace `codex` with `claude-code`, or install for both at once:
 
 ```sh
 npx skills add thefogusz/OneForAll --skill oneforall --agent codex claude-code --global
 ```
 
-`--skill oneforall` เลือกเฉพาะสกิลที่ใช้ทำงาน ส่วน `--global` ทำให้ใช้ได้ในทุกโปรเจกต์ หากต้องการติดตั้งเฉพาะโปรเจกต์ ให้รันจากโฟลเดอร์นั้นและเอา `--global` ออก
+`--skill oneforall` selects the controller skill. `--global` makes it available across projects. For a project-only installation, run the command from that project's directory and omit `--global`.
 
-ตัวติดตั้งอาจใช้ symlink เพื่อให้หลาย agent อ่านไฟล์ชุดเดียวกัน หากต้องการคัดลอกไฟล์แทน ให้เพิ่ม `--copy`
+The installer may use symlinks so multiple agents can share the same files. Add `--copy` if you prefer separate copies.
 
-สำหรับ agent อื่น ให้เลือกชื่อจาก [รายการที่ Skills CLI รองรับ](https://github.com/vercel-labs/skills/blob/main/docs/agents.md) การติดตั้งสำเร็จยืนยันว่าไฟล์ถูกวางแล้ว ส่วนผลทดสอบการใช้งานแต่ละ agent ดูได้ที่ [ผลทดสอบ](verification.md)
+For another agent, choose its identifier from the [Skills CLI agent list](https://github.com/vercel-labs/skills/blob/main/docs/agents.md). A successful installation confirms file placement. See the [testing notes](verification.md) for what has been tried in each agent.
 
-## ตำแหน่งไฟล์และคำสั่งเรียก
+## File locations and invocation
 
-| Agent | สกิลส่วนตัว | เรียกใช้ | สกิลโปรเจกต์ที่สร้างใหม่ |
+| Agent | Personal skill | Invocation | New project skills |
 | --- | --- | --- | --- |
 | Codex | `~/.agents/skills/oneforall/` | `$oneforall` | `<project>/.agents/skills/<name>/` |
 | Claude Code | `~/.claude/skills/oneforall/` | `/oneforall` | `<project>/.claude/skills/<name>/` |
-| Agent อื่น | ใช้ตำแหน่งตามเอกสารของ agent | ใช้คำสั่งที่รองรับ หรือสั่งให้อ่าน `SKILL.md` | ตรวจตำแหน่งของ agent นั้นก่อน |
+| Other agents | Follow the agent's documentation | Use its supported command or ask it to read `SKILL.md` | Verify the agent's project path first |
 
-`~` หมายถึงโฟลเดอร์ผู้ใช้ และ `<project>` หมายถึงโฟลเดอร์หลักของโปรเจกต์ ให้แทนด้วยตำแหน่งบนเครื่องของคุณ บน PowerShell ดูโฟลเดอร์ผู้ใช้ได้ด้วย `$HOME`; บน macOS/Linux ใช้ `echo "$HOME"`
+`~` means your home directory; `<project>` means the project's root directory. Substitute the locations on your machine. In PowerShell, use `$HOME` to find your home directory; on macOS/Linux, use `echo "$HOME"`.
 
-Codex บางชุดติดตั้งพบสกิลจาก `$CODEX_HOME/skills` หรือ `~/.codex/skills` ถ้ามี OneForAll ที่ใช้งานได้อยู่แล้ว ให้ใช้ตำแหน่งเดิมเพื่อไม่ให้มีหลายสำเนา
+Some Codex installations discover skills in `$CODEX_HOME/skills` or `~/.codex/skills`. If you already have a working OneForAll installation, keep that location rather than creating another copy.
 
-## ติดตั้งด้วยไฟล์
+## Install manually
 
-วิธีนี้ไม่ต้องใช้ Node.js ให้ clone หรือดาวน์โหลด repo แล้วคัดลอกทั้งโฟลเดอร์ `skills/oneforall/` ไปยังตำแหน่งสกิลส่วนตัวของ agent ตามตารางด้านบน โดยเก็บ `SKILL.md`, `references/`, `assets/` และ `agents/` ไว้ด้วยกัน
+This method doesn't need Node.js. Clone or download the repository, then copy the entire `skills/oneforall/` folder to your agent's personal skill directory from the table above. Keep `SKILL.md`, `references/`, `assets/`, and `agents/` together.
 
-ถ้าเคยติดตั้งไว้แล้ว ให้สำรองหรือเปรียบเทียบกับชุดเดิมก่อนแทนที่ จากนั้นเปิด session ใหม่หากสกิลยังไม่แสดง
+If OneForAll is already installed, back up or compare the existing files before replacing them. Start a new session if the skill isn't visible yet.
 
-## เปิดโหมดอัตโนมัติ
+## Enable automatic use
 
-หลังติดตั้ง คุณสามารถเรียก OneForAll เองได้ทันที หากต้องการให้ agent พิจารณาใช้เองเวลาเริ่มงาน ให้เพิ่มคำสั่งด้านล่างในไฟล์คำสั่งส่วนตัว:
+You can invoke OneForAll directly after installation. To let the agent decide when to use it as work begins, add the block below to your personal instruction file:
 
-- **Codex:** `AGENTS.md` ใต้ `$CODEX_HOME` ซึ่งปกติคือ `~/.codex` ถ้ามี `AGENTS.override.md` ที่ไม่ว่าง ให้เพิ่มในไฟล์นั้นเพราะมันมีผลแทน `AGENTS.md`
-- **Claude Code:** `~/.claude/CLAUDE.md`
-- **ใช้เฉพาะโปรเจกต์:** เพิ่มใน `AGENTS.md` ของโปรเจกต์สำหรับ Codex หรือ `CLAUDE.md` สำหรับ Claude Code
+- **Codex:** `AGENTS.md` under `$CODEX_HOME`, usually `~/.codex`. If a non-empty `AGENTS.override.md` exists, add the block there because it takes precedence over `AGENTS.md`.
+- **Claude Code:** `~/.claude/CLAUDE.md`.
+- **One project only:** use the project's `AGENTS.md` for Codex or `CLAUDE.md` for Claude Code.
 
-เพิ่มบล็อกนี้ต่อจากเนื้อหาเดิม โดยเก็บคำสั่งอื่นในไฟล์ไว้:
+Append this block and preserve the other instructions in the file:
 
 ```markdown
 <!-- oneforall:start -->
@@ -75,31 +77,31 @@ without another search or an unnecessary rewrite.
 <!-- oneforall:end -->
 ```
 
-บล็อกนี้อนุญาตให้ OneForAll สร้างและปรับสกิลที่มันดูแลภายในโปรเจกต์ ส่วนการติดตั้งสกิลภายนอกที่แนะนำยังต้องรอให้คุณเลือก
+This authorizes OneForAll to create and update the skills it manages within the project. Installing recommended third-party skills still requires your selection.
 
-ถ้า agent หาสกิลไม่เจอ ให้ระบุพาธของ `SKILL.md` ที่ติดตั้งไว้เพิ่มในบล็อก แล้วเริ่ม session ใหม่ สำหรับ agent อื่น ให้ใช้ไฟล์คำสั่งประจำตามเอกสารของ agent นั้น
+If the agent cannot find OneForAll, add the path to its installed `SKILL.md` in the block and start a new session. For other agents, use the persistent instruction mechanism documented by that agent.
 
-## ทดลองใช้
+## Try it
 
 ```text
-Codex:       $oneforall ตรวจและแก้ export ในโปรเจกต์นี้
-Claude Code: /oneforall ตรวจและแก้ export ในโปรเจกต์นี้
+Codex:       $oneforall Check and fix this project's export.
+Claude Code: /oneforall Check and fix this project's export.
 ```
 
-ถ้า agent ทำงานนี้ได้ด้วยความสามารถและแนวทางเดิม ก็ทำต่อได้เลย อาจไม่มีการค้นหรือไฟล์สกิลใหม่เกิดขึ้น เมื่อมีเหตุให้ค้นเพิ่มจึงค้นข้อมูลและสกิลแยกกัน แล้วเก็บวิธีที่มีประโยชน์ไว้ในโปรเจกต์
+If existing capabilities and guidance cover the task, the agent can proceed directly. There may be no research or new skill file. When further research would help, it searches for technical information and skills separately, then saves useful procedures in the project.
 
-หากต้องการค้นสกิลโดยตรง ลองสั่งว่า “หาสกิลที่ช่วยลดงานซ้ำของโปรเจกต์นี้ พร้อมเหตุผล”
+To request skill discovery directly, try: "Find skills that could reduce repetitive work in this project, and explain why they fit."
 
-เมื่อสลับระหว่าง Codex กับ Claude Code ในโปรเจกต์เดียวกัน OneForAll จะอ่านสกิลเดิมจากอีกโฟลเดอร์ได้โดยตรง จึงไม่ต้องสร้างสำเนาใหม่ แต่การค้นพบสกิลอัตโนมัติของแต่ละ agent ยังขึ้นกับตำแหน่งที่ agent นั้นรองรับ
+When switching between Codex and Claude Code in the same project, OneForAll can read an existing skill directly from the other directory without creating a duplicate. Each agent's automatic discovery still depends on the paths that agent supports.
 
-## ปิดใช้งานหรือถอนการติดตั้ง
+## Disable or uninstall
 
-- **ปิดสำหรับงานเดียว:** บอกว่า “งานนี้ไม่ใช้ OneForAll” หรือระบุขอบเขต เช่น “งานนี้อ่านอย่างเดียว ไม่แก้ไฟล์”
-- **ปิดโหมดอัตโนมัติ:** ลบเฉพาะบล็อกตั้งแต่ `oneforall:start` ถึง `oneforall:end` ออกจากไฟล์ที่เพิ่มไว้
-- **ถอนการติดตั้ง:** ปิดโหมดอัตโนมัติก่อน แล้วถอนด้วยตัวติดตั้งที่ใช้ หรือเอาโฟลเดอร์สกิลกลางออก สกิลที่สร้างไว้ในโปรเจกต์ยังอยู่ให้ใช้ต่อได้
+- **For one task:** say "Don't use OneForAll for this task," or set a constraint such as "Read only; don't change files."
+- **Disable automatic use:** remove only the block from `oneforall:start` through `oneforall:end` in the instruction file you edited.
+- **Uninstall:** disable automatic use first, then use your installer to remove the controller or remove its folder manually. Project skills remain available for reuse.
 
-## ใช้กับสภาพแวดล้อมอื่น
+## Other environments
 
-OneForAll ใช้รูปแบบ Agent Skills และต้องอาศัยเครื่องมืออ่าน/เขียนไฟล์ รวมถึงเครื่องมือเว็บเมื่อต้องรีเสิร์ช หากแชตนั้นไม่มีพื้นที่เก็บไฟล์ถาวร จะทำได้เพียงร่างสกิลให้คุณนำไปบันทึกเอง ส่วนการใช้บน cloud อาจต้องติดตั้งแยกจากเครื่องของคุณ
+OneForAll uses the Agent Skills format. It needs file tools to read and write skills, plus web tools when research is required. In a chat without persistent file storage, it can only draft a skill for you to save. A cloud environment may need a separate installation from your local machine.
 
-ตำแหน่งไฟล์และคำสั่งในคู่มือนี้ตรวจจากเอกสารเมื่อ 2026-10-28: [Codex skills](https://learn.chatgpt.com/docs/build-skills), [Codex instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [Claude Code skills](https://code.claude.com/docs/en/skills), [Claude Code memory](https://code.claude.com/docs/en/memory), [Skills CLI](https://github.com/vercel-labs/skills/blob/main/docs/commands.md)
+Paths and commands were checked against documentation on 2026-10-28: [Codex skills](https://learn.chatgpt.com/docs/build-skills), [Codex instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [Claude Code skills](https://code.claude.com/docs/en/skills), [Claude Code memory](https://code.claude.com/docs/en/memory), [Skills CLI](https://github.com/vercel-labs/skills/blob/main/docs/commands.md).

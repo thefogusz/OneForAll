@@ -3,23 +3,24 @@
 </p>
 
 <h1 align="center">OneForAll</h1>
-<p align="center">ช่วย agent ค้นหาและปรับสกิลให้เหมาะกับโปรเจกต์ที่คุณกำลังทำ</p>
+<p align="center"><a href="README.md">English</a> | <a href="README.th.md">ภาษาไทย</a></p>
+<p align="center">Help your agent discover and adapt skills for the project you're working on.</p>
 
 <p align="center">
-  <a href="docs/setup.md">คู่มือติดตั้ง</a> ·
-  <a href="skills/oneforall/SKILL.md">ตัวสกิล</a> ·
-  <a href="docs/verification.md">ผลทดสอบ</a>
+  <a href="docs/setup.md">Setup guide</a> ·
+  <a href="skills/oneforall/SKILL.md">Skill source</a> ·
+  <a href="docs/verification.md">Testing notes</a>
 </p>
 
-หลายปัญหาที่เราเจอตอนทำโปรเจกต์ มีคนเขียนสกิลหรือขั้นตอนแก้ไว้แล้ว แต่เราอาจไม่รู้ว่ามี หรือไม่มีเวลาไปไล่หาว่าตัวไหนเหมาะกับงานของเรา
+Someone may already have written a skill for the problem you're working on. Finding it, then deciding whether it fits your codebase, takes time.
 
-**OneForAll** ทำขึ้นมาเพื่อช่วยตรงนี้ เมื่อคุณเริ่มแก้ปัญหาหรือสร้างอะไรใหม่ มันจะช่วย agent ดูว่ามีสกิลที่ทำให้งานง่ายขึ้นได้ไหม ถ้ามี ก็ค้นและนำวิธีที่เกี่ยวข้องมาปรับใช้กับโปรเจกต์ พร้อมเก็บเป็นสกิลสำหรับใช้ต่อในงานครั้งถัดไป
+**OneForAll** helps your agent with that. When you start a fix or build something new, it considers whether an existing skill could make the work easier. When further research would help, it looks for relevant techniques and skills, adapts them to your project, and saves useful procedures for later tasks.
 
-งานที่ agent ทำได้อยู่แล้วก็ทำต่อได้เลย ไม่จำเป็นต้องค้นเพิ่มทุกครั้ง และไม่ควรมีเรื่องสกิลมาขัดจังหวะการคุยตามปกติ
+If the agent already has what it needs, it gets on with the work. Routine tasks don't need another search, and ordinary conversations shouldn't turn into discussions about skills.
 
-## เริ่มใช้งาน
+## Getting started
 
-ติดตั้งผ่าน [Skills CLI ของ Vercel](https://github.com/vercel-labs/skills) โดยเลือกคำสั่งให้ตรงกับ agent ที่ใช้ ต้องมี Node.js/npm และ Git:
+Install through Vercel's [Skills CLI](https://github.com/vercel-labs/skills). You'll need Node.js/npm and Git. Choose the command for your agent:
 
 ```sh
 # Codex
@@ -29,51 +30,51 @@ npx skills add thefogusz/OneForAll --skill oneforall --agent codex --global
 npx skills add thefogusz/OneForAll --skill oneforall --agent claude-code --global
 ```
 
-จากนั้นเรียกใช้พร้อมงานที่ต้องการทำ:
+Then invoke it with a task:
 
 ```text
-Codex:       $oneforall แก้ระบบ export ให้รองรับข้อมูลภาษาไทยในโปรเจกต์นี้
-Claude Code: /oneforall แก้ระบบ export ให้รองรับข้อมูลภาษาไทยในโปรเจกต์นี้
+Codex:       $oneforall Fix this project's export so it handles Thai text correctly.
+Claude Code: /oneforall Fix this project's export so it handles Thai text correctly.
 ```
 
-ถ้าต้องการให้ agent พิจารณาใช้เองในแต่ละโปรเจกต์ ให้เพิ่ม [คำสั่งเปิดโหมดอัตโนมัติ](docs/setup.md#เปิดโหมดอัตโนมัติ) อีกครั้งเดียว หากเพิ่งติดตั้งแล้วสกิลยังไม่แสดง ให้เปิด session ใหม่
+To let your agent decide when to use OneForAll across projects, add the [automatic-use instructions](docs/setup.md#enable-automatic-use) once. Start a new session if a newly installed skill isn't visible yet.
 
-วิธีติดตั้งด้วยไฟล์ การติดตั้งเฉพาะโปรเจกต์ และการใช้กับ agent อื่นอยู่ใน [คู่มือติดตั้ง](docs/setup.md)
+The [setup guide](docs/setup.md) also covers manual installation, installation for a single project, and other agents.
 
-## ทำงานยังไง
+## How it works
 
-OneForAll เริ่มจากดูงานและแนวทางที่โปรเจกต์มีอยู่ก่อน ถ้าสิ่งที่มีเพียงพอ ก็ใช้ต่อได้ทันที ส่วนการค้นเพิ่มจะเกิดเมื่อมีเหตุผลว่าความรู้หรือขั้นตอนเฉพาะทางช่วยงานได้ เช่น งานที่ต้องทำด้วยมือซ้ำ ๆ เทคนิคที่ยังไม่คุ้น หรือปัญหาที่แก้หลายรอบแล้วยังไม่ผ่าน
+OneForAll starts with the task and the guidance already available in the project. If those are sufficient, the agent uses them directly. It researches further when a specialist technique or workflow could help, for example with repetitive manual work, unfamiliar tools, or a problem that keeps resisting a fix.
 
-เมื่อควรค้นเพิ่ม จะทำสองส่วนแยกกัน:
+When research is warranted, it follows two separate tracks:
 
-- **ค้นข้อมูลและเทคนิค** จากเอกสารต้นทาง โดยเทียบกับเครื่องมือ เวอร์ชัน และข้อกำหนดของโปรเจกต์
-- **ค้นสกิล** จากสกิลที่มีอยู่, skills.sh และคลังของผู้พัฒนา แล้วอ่านเนื้อหาจริงก่อนเลือกใช้
+- **Technical research:** read primary documentation and compare it with the project's tools, versions, and requirements.
+- **Skill research:** check available skills, skills.sh, and source repositories, then read promising skills before choosing an approach.
 
-ถ้าเจอสกิลที่ตรงงานอยู่แล้วก็ใช้ของเดิม ถ้าเจอวิธีที่ดีจากหลายแหล่งก็นำมาปรับให้เข้ากับโปรเจกต์ หากยังไม่มีสกิลที่เหมาะ แต่ข้อมูลที่ค้นมามีขั้นตอนที่ควรเก็บไว้ใช้ซ้ำ ก็สร้างสกิลของโปรเจกต์ขึ้นมาได้
+A suitable existing skill can be used as it is. Useful techniques from several sources can be adapted to the project. If no skill fits but the research produces a procedure worth reusing, OneForAll can write a project skill from those findings.
 
 ```mermaid
 flowchart TD
-    A[เริ่มงาน] --> B{สกิลเพิ่มเติมจะช่วยงานนี้ไหม}
-    B -- ยังไม่จำเป็น --> C[ใช้ความสามารถและแนวทางเดิม]
-    B -- มีประโยชน์ --> D[ค้นข้อมูลและค้นสกิลแยกกัน]
-    D --> E[เลือกใช้ ปรับ หรือสร้างสกิลของโปรเจกต์]
-    C --> F[ทำงานและตรวจผล]
+    A[Start a task] --> B{Would another skill help?}
+    B -- Not needed --> C[Use existing capabilities and guidance]
+    B -- Useful --> D[Research technical information and skills separately]
+    D --> E[Use, adapt, or create a project skill]
+    C --> F[Complete the work and check the result]
     E --> F
 ```
 
-เป้าหมายยังเป็นงานที่คุณสั่ง สกิลจะถูกสร้างหรือปรับเมื่อมีสิ่งที่ควรเก็บจริง ๆ และผลที่ยังไม่ได้ทดสอบจะไม่ถูกบันทึกว่าใช้ได้แล้ว
+The task you asked for remains the priority. Skills are created or updated only when there is something useful to retain, and untested guidance is kept distinct from verified results.
 
-ถ้าอยากสำรวจสกิลโดยตรง ก็ขอได้เลย เช่น “มีสกิลอะไรช่วยลดงานซ้ำในโปรเจกต์นี้บ้าง”
+You can also request discovery directly: "Which skills could help reduce repetitive work in this project?"
 
-## การแนะนำสกิลเพิ่มเติม
+## Skill recommendations
 
-ระหว่างค้น OneForAll อาจพบสกิลภายนอกที่น่าใช้กับโปรเจกต์ มันจะเสนอพร้อมลิงก์ เหตุผล และเครื่องมือหรือค่าใช้จ่ายที่จำเป็น โดยปกติเสนอตัวที่เหมาะที่สุดตัวเดียว หรือไม่เกินสามตัวเมื่อมีทางเลือกที่ต่างกันจริง
+During research, OneForAll may find a third-party skill worth adding to the project. It can suggest it with a source link, the reason it would help, and any required tools or costs. Usually one recommendation is enough; it may offer up to three when there are useful alternatives.
 
-การติดตั้งสกิลภายนอกจะรอให้คุณเลือกก่อน ระหว่างนั้นงานหลักยังดำเนินต่อ รวมถึงการสร้างสกิลเฉพาะโปรเจกต์จากข้อมูลที่ค้นมา
+Installing a third-party skill waits for your choice. The main task continues in the meantime, including any useful project skills OneForAll can write from the research.
 
-## สกิลของแต่ละโปรเจกต์
+## Project skills
 
-OneForAll เป็นสกิลกลาง ส่วนความรู้ที่ได้จากการทำงานจะเก็บในโปรเจกต์นั้น ตัวอย่างเมื่อใช้ Codex:
+OneForAll is the shared controller. The knowledge it develops while working stays in the project. For example, in Codex:
 
 ```text
 project-a/
@@ -87,30 +88,30 @@ project-b/
         └── SKILL.md
 ```
 
-เมื่อเริ่มโปรเจกต์ใหม่ จะพิจารณาจากโค้ด เครื่องมือ และข้อกำหนดของโปรเจกต์ใหม่ด้วย ความรู้ของแต่ละโปรเจกต์จึงแยกจากกัน
+When you switch projects, it assesses the new project's code, tools, and requirements. Each project keeps its own guidance.
 
-Codex สร้างสกิลใหม่ใน `.agents/skills/` ส่วน Claude Code ใช้ `.claude/skills/` ก่อนสร้าง OneForAll จะตรวจทั้งสองตำแหน่ง ถ้ามีสกิลที่ตรงงานอยู่แล้วก็อ่านจากที่เดิมได้ แม้จะเปลี่ยน agent
+New skills go in `.agents/skills/` for Codex or `.claude/skills/` for Claude Code. OneForAll checks both locations before creating a skill. If a suitable one already exists, it reads that file directly, even when you have changed agents.
 
-สกิลที่ OneForAll ดูแลจะมี `metadata.oneforall-managed: "true"` เพื่อให้ปรับปรุงต่อได้ ส่วนสกิลที่คุณเขียนเองจะใช้ตามเดิม เว้นแต่คุณสั่งให้แก้
+Skills managed by OneForAll carry `metadata.oneforall-managed: "true"` so they can be maintained over time. Skills you wrote yourself are used as they are unless you ask for changes.
 
-## การรองรับและผลทดสอบ
+## Compatibility and testing
 
-| Agent | สถานะ |
+| Agent | Status |
 | --- | --- |
-| Codex | ทดสอบการติดตั้งและการทำงานกับโจทย์ตัวอย่างแล้ว |
-| Claude Code | ทดสอบการติดตั้งและตรวจคำสั่งจากเอกสารทางการแล้ว ยังไม่ได้ทดสอบใน Claude Code จริง |
-| Agent อื่นที่รองรับ Agent Skills | มีแนวทางปรับตำแหน่งไฟล์และวิธีเรียก ยังไม่ได้ทดสอบแต่ละตัว |
+| Codex | Installation and sample tasks tested. |
+| Claude Code | Installation tested and setup checked against official documentation. Execution in Claude Code has not been tested. |
+| Other Agent Skills clients | Guidance for adapting paths and invocation is included. Individual clients have not been tested. |
 
-OneForAll เป็นชุดคำสั่งใน `SKILL.md` ที่ใช้เครื่องมือของ agent เดิม การทำงานอัตโนมัติจึงขึ้นกับ agent และการตั้งค่าที่ใช้ อ่านรายละเอียดของแต่ละการทดสอบได้ใน [ผลทดสอบ](docs/verification.md)
+OneForAll is a set of instructions in `SKILL.md` that uses the agent's existing tools. Automatic use depends on the agent and its configuration. See the [testing notes](docs/verification.md) for the scope of each check.
 
-การค้นต้องอาศัยเครื่องมือเว็บที่ agent มีอยู่ หากเข้าถึงไม่ได้ต้องแจ้งตามจริง และใช้เฉพาะข้อมูลที่ตรวจสอบได้ ค่าใช้จ่ายของโมเดลและเครื่องมือเป็นไปตามบริการที่คุณใช้ OneForAll ไม่ต้องเปิดบริการเบื้องหลังหรือสมัคร API เพิ่ม
+Research needs the agent's web tools. If access is unavailable, the agent should say so and work only from evidence it can verify. Model and tool costs follow your existing services; OneForAll requires no background service or additional API subscription.
 
-## แนวคิดและแหล่งอ้างอิง
+## Design sources
 
-OneForAll นำแนวคิดการค้นสกิลจาก [Vercel find-skills](https://github.com/vercel-labs/skills/blob/main/skills/find-skills/SKILL.md) และการเก็บบทเรียนที่ใช้ซ้ำได้จาก [AutoSkill](https://github.com/ECNU-ICALK/AutoSkill) มาประกอบกับแนวทางการเขียนสกิลของ [OpenAI](https://github.com/openai/skills) และ [Anthropic](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md)
+OneForAll draws on skill discovery from [Vercel find-skills](https://github.com/vercel-labs/skills/blob/main/skills/find-skills/SKILL.md), reusable lessons from [AutoSkill](https://github.com/ECNU-ICALK/AutoSkill), and skill-authoring guidance from [OpenAI](https://github.com/openai/skills) and [Anthropic](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md).
 
-เป็นการนำวิธีคิดมาใช้ในขั้นตอนของ OneForAll ไม่ต้องติดตั้งทุกโครงการข้างต้น รายละเอียดอยู่ใน [แหล่งอ้างอิง](skills/oneforall/references/research-sources.md) ส่วนโลโก้สร้างด้วย AI
+These ideas inform OneForAll's workflow; you don't need to install all of those projects. Details are in the [research references](skills/oneforall/references/research-sources.md). The logo was generated with AI.
 
-## แจ้งปัญหา
+## Reporting issues
 
-ถ้าพบว่าเรียกใช้ผิดจังหวะ สร้างสกิลซ้ำ หรือเก็บวิธีที่ใช้ไม่ได้ ช่วย [เปิด issue](https://github.com/thefogusz/OneForAll/issues) พร้อมงานที่สั่ง, agent ที่ใช้ และผลที่เกิดขึ้น โดยลบข้อมูลส่วนตัวออกก่อน
+If OneForAll activates at the wrong time, creates duplicate skills, or saves guidance that doesn't work, please [open an issue](https://github.com/thefogusz/OneForAll/issues) with the task, agent, and observed result. Remove private information before sharing examples.
