@@ -6,7 +6,7 @@ The idea: the strongest model writes the recipe once; cheaper models and plain c
 
 ## Stations
 
-Stations are tiers, not product names. Map each tier to the active host's current lineup with the table in the next section.
+Stations are tiers, not product names. Map each tier to the active host's current lineup with "Resolving tiers at run time" below.
 
 | Station | Tier | Does | Never |
 | --- | --- | --- | --- |
@@ -22,16 +22,48 @@ Stations are tiers, not product names. Map each tier to the active host's curren
 
 **The kitchen equipment row matters most.** If code can do a step, code does it. A templated video clip is a template filled by code and encoded by ffmpeg, not an agent per clip. Numbers always come from scripts, never from a model.
 
-## Host mapping
+## Resolving tiers at run time
 
-Verify names against the host's current model list or config before writing them into a job; never invent a model ID. Record the IDs a job uses, with the date checked, in that job's routing card so a new generation is updated in one place.
+This guide never names a model. Model lineups change faster than skills, so resolve the tiers fresh each time a job is built or audited, from what the host offers **now**.
 
-| Host | Tiers (small → strongest) | Where the model is set |
-| --- | --- | --- |
-| Claude Code | Haiku → Sonnet → Opus → the top tier listed for the account (read IDs from the host's model list) | Subagent: the Agent tool's `model` parameter. Skill: frontmatter `model` where supported. Headless or scheduled run: `claude -p --model <id>`. |
-| Codex | The models the active Codex config exposes, ordered by capability and price; use a lower `model_reasoning_effort` as an extra rung | Run: `codex exec -m <model>`. Persistent: `model` / `model_reasoning_effort` in `config.toml` under `CODEX_HOME`, or a named profile per job. |
-| Other agents | Whatever the host documents | The host's documented model setting; ask if none is documented |
-| Pipeline code (any host) | Any API the project already uses | One env var per step (e.g. `MYJOB_SUMMARY_MODEL`) whose default is the current model, so rollback = delete the line |
+**1. List what is actually available**, read-only, in this order. Stop at the first source that works:
+
+- the host's own model list or picker (Claude Code's model aliases and `/model` list; the models Codex's config and picker expose);
+- the provider's models endpoint, if the project already has API access (e.g. a `GET /v1/models` call with the project's existing key);
+- the provider's official models/pricing page, read with the web tools.
+
+Drop anything marked deprecated, preview-only, or not available to this account. Never invent an ID or reuse one remembered from another conversation.
+
+**2. Rank by price, then by the vendor's own positioning.** Within one provider, list price per million tokens (input + output) is the most stable signal of tier: vendors price small/fast models low and flagships high. Break ties, or fill gaps when prices are hidden, with the vendor's description ("fast", "efficient" → lower; "most capable", "flagship", "frontier" → higher). Benchmarks are a tiebreaker only. A larger version number alone does not mean a higher tier.
+
+**3. Assign tiers from the ranking:**
+
+| Ranking position | Tier |
+| --- | --- |
+| Cheapest generally available model | prep |
+| Next one up | sous |
+| The vendor's flagship (most capable model in normal use) | head chef |
+| Anything priced or positioned above the flagship | consultant (absent if nothing is) |
+
+With only two models, the cheaper one is both prep and sous and the other is the head chef. With one model, use reasoning-effort or thinking settings as the rungs: lowest for prep, default for sous, highest for the head chef. Codex's `model_reasoning_effort` is such a rung on any lineup.
+
+**4. Aliases vs pinned IDs.** Some hosts offer aliases that follow the newest model of a tier (Claude Code accepts `haiku`, `sonnet`, `opus`). An alias upgrades silently, and replay evidence belongs to the exact model it was run on. So:
+
+- **pin the resolved ID** for steps whose errors are public or legal, and for any step that was downgraded on replay evidence;
+- an **alias is fine** for prep steps whose output is fully checked by code, and for the head-chef escalation path.
+
+**5. Re-check when the lineup changes.** When step 1 shows a model the job's routing card doesn't list, or a pinned ID is announced for retirement, propose a re-check: run the replay protocol for the affected steps. A new cheaper model may now pass a step that needed the sous tier, and a retired ID must move before it breaks. Do not swap a pinned ID without that replay.
+
+Record the resolved tier → ID table, the source used, and the date in the job's routing card.
+
+## Where the model is set
+
+| Host | Where |
+| --- | --- |
+| Claude Code | Subagent: the Agent tool's `model` parameter. Skill: frontmatter `model` where supported. Headless or scheduled run: `claude -p --model <id>`. |
+| Codex | Run: `codex exec -m <model>`. Persistent: `model` / `model_reasoning_effort` in `config.toml` under `CODEX_HOME`, or a named profile per job. |
+| Other agents | The host's documented model setting; ask if none is documented. |
+| Pipeline code (any host) | One env var per step (e.g. `MYJOB_SUMMARY_MODEL`) whose default is the current model, so rollback = delete the line. |
 
 Name the station in a comment wherever the model is set, so the next reader knows it was chosen on purpose.
 
@@ -95,7 +127,7 @@ Try these before, or alongside, a downgrade. They risk less quality than swappin
    - **Escalation ceiling:** more than ~10% of a week's runs reaching the head chef means the recipe is broken. Stop and send it back for a rewrite; don't let the strong model quietly cook every night.
    - **Strict stop fields:** a field that halts the pipeline (e.g. `blockers`) gets a schema description saying exactly that, and questions for the head chef get their own field. Otherwise a cheap model lists notes as blockers and halts the run.
    - **Output language** stated.
-4. **Wire the model** where the host table says, with the station named in a comment.
+4. **Resolve tiers and wire the model**: resolve the tier → ID table as described above, then set the model where the host table says, with the station named in a comment.
 5. **One head chef per job.** Never fan out several strong-tier agents to do prep. Fan out prep or sous workers under one head-chef orchestrator, and only when the user asked for multi-agent work.
 
 ## Existing job (downgrade or audit)
@@ -130,6 +162,8 @@ Step                 Station      Model / tool (ID, date checked)   Check that g
 3 tag items          prep         <small-model-id>                  schema + replay passes bar (3f)
 4 draft report       sous         <mid-model-id>                    checks.py (numbers = script, disclosure)
 5 escalation         head chef    <strong-model-id>                 only when 4 fails twice; ceiling 10%/week
+Tiers resolved <date> from <host list | models endpoint | pricing page>: prep=<id> sous=<id> head=<id> consultant=<id|none>
+Pinned: <steps on fixed IDs>   Aliased: <steps on aliases>
 Critic: <cross-family | same-family review | self-review>
 Evidence: <replay note path>   Rollback: <env/config line>   Escalation log: <path>
 ```
