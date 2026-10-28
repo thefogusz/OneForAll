@@ -1,6 +1,6 @@
 ---
 name: oneforall
-description: Discover useful skills for project work when specialized guidance could help. Quietly assess capability gaps before fixes or new work; research and maintain project skills only when they add concrete value. Use when OneForAll is requested, not for casual chat or status updates.
+description: Discover useful skills for project work when specialized guidance could help. Quietly assess capability gaps before fixes or new work; research and maintain project skills only when they add concrete value; route recurring model jobs to the cheapest capable model. Use when OneForAll is requested, not for casual chat or status updates.
 ---
 
 # OneForAll
@@ -21,6 +21,7 @@ Inspect only enough task/project context to choose a route. Use available skill 
 | An existing applicable skill covers the task | Use it as needed. Do not search for replacements or rewrite it just to create activity. |
 | Unfamiliar/version-sensitive technique, repeated failure, recurring manual workflow, or a credible existing specialist skill could materially reduce effort or errors | Research the specific gap using both tracks below. State the concrete expected benefit when useful. |
 | User explicitly asks to find/research skills or improve the project's skill coverage | Perform that requested discovery, even if the immediate task is otherwise solvable. |
+| Task builds, downgrades, or audits a scheduled job, pipeline, repeatedly run skill, or multi-agent workflow that calls a model | Read [model-routing.md](references/model-routing.md) and route each step to the cheapest capable station. Save the job's routing card in its project skill or doc. |
 
 Complexity or the words "new feature" are not sufficient evidence by themselves. Do not invent a capability gap to justify this skill. Conversely, assess discoverability, not just ability: a ready-made workflow may materially help even when the agent could eventually build one itself. Continue to obey independent requirements to verify current facts; an ordinary documentation lookup does not automatically require a skill search.
 
