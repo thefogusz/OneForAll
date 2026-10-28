@@ -12,10 +12,27 @@ Recorded on 2026-10-28. These notes distinguish completed checks from work still
 | Documentation consistency | Reviewed the skill, README, setup guide, and metadata. Found no main instruction that contradicted researching only when useful. |
 | Installation for Codex and Claude Code | Skills CLI copied the files to both agents' directories. File names and hashes matched the source package. |
 | Package structure | The controller and repository maintenance skill passed `quick_validate.py`. Local links and icon paths were checked. |
-| Execution in Claude Code | Not tested. Claude Code CLI was not available on the test machine. |
+| Execution in Claude Code | Six task types run by fresh agents following both skills (see below). Native automatic invocation by the host not yet observed end to end. |
 | Other agents | Execution has not been tested. |
 | Work principles (2026-10-29) | Added eight principles adapted from Superpowers and Ponytail to OneForAll, with sources in `references/work-principles.md`, and updated the automatic-use block. Format and links checked. Whether agents follow them, and how they interact with installed Superpowers or Ponytail, has not been tested. |
 | head-chef skill (2026-10-29) | Moved the model routing guide into its own skill, `skills/head-chef/`. Both skills pass `quick_validate.py`. Skills CLI installed `oneforall` and `head-chef` together into an isolated folder for Codex and Claude Code. Routing a real job, the CLI check, and the fresh-reviewer fallback have not been tested on either agent. |
+
+## Six kinds of work
+
+Recorded on 2026-10-29. Six fresh agents (Sonnet tier, Claude Code host) each got a small fixture project, both skills to read as installed skills, and one user request. They were not told what was being checked. Each fixture hid one trap. Outputs were re-checked independently afterwards (totals recomputed, test file run, video probed, skill file validated).
+
+| Work | Request and trap | First run | After fixes |
+| --- | --- | --- | --- |
+| Code | "The 10% discount takes too much off." `/ 10` instead of `/ 100`, used by two callers | Root cause fixed once, callers checked, before/after run; **no test left behind** | Test file added, seen failing then passing |
+| Documentation | "We renamed the entry script; update the usage." Old name also in the FAQ | Both places fixed; documented command run | — |
+| Video | "Make the teaser from the brief." 6 s, 720p, keep audio | Source kept; duration, size, loudness probed; **frames not viewed** (reported honestly) | Frames extracted to `review/` and viewed |
+| Data | "Total sales per region for the board deck." One duplicate order, one blank amount | Both found, effect on totals given, numbers from a script | — |
+| Quick question | "What does this project do?" | Answered directly; no files, searches, or skill talk | — |
+| Recurring model job | "The nightly digest burns our usage limit." All tickets sent to the top model | Code-first routing card; **skill file failed the validator** (`->` in its description); **critic check not run; tiers left unresolved** | Validated file; CLI check run; provisional tier aliases with the command to pin real IDs |
+
+Changes made from these results: principle 5 now requires keeping a test file for money or branching logic; the media check requires opening extracted frames; generated skills must be validated (with manual rules when no validator exists); head-chef falls back to documented tier aliases and runs the CLI check whenever a card is written; principle 1 lists the project's skill folders first.
+
+Limits: one run per scenario, one model tier, fixtures are small, and the skills were read from files rather than discovered automatically by the host. No task created an unnecessary project skill; only the recurring-job task created one, as intended.
 
 ## Typo correction
 

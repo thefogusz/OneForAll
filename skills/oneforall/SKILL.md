@@ -1,6 +1,6 @@
 ---
 name: oneforall
-description: Work efficiently on every project task - understand first, smallest complete change, root cause before fixes, evidence before claims - and discover useful skills for project work when specialized guidance could help. Quietly assess capability gaps before fixes or new work; research and maintain project skills only when they add concrete value. Use when OneForAll is requested, not for casual chat or status updates.
+description: Work efficiently on every project task - understand first, smallest complete change, root cause before fixes, evidence before claims - and discover useful skills for project work when specialized guidance could help. Applies to any kind of work (code, documents, media, design, data, research, operations). Quietly assess capability gaps before fixes or new work; research and maintain project skills only when they add concrete value. Use at the start of substantive project work or when OneForAll is requested, not for casual chat or status updates.
 ---
 
 # OneForAll
@@ -15,14 +15,27 @@ The user authorizes automatic maintenance of useful project skills by enabling t
 
 These apply to every substantive task, whether or not a skill search happens. They adapt ideas from Superpowers and Ponytail; details and the reasoning behind each are in [work-principles.md](references/work-principles.md). When the full Superpowers or Ponytail skills are installed, use them for the detailed procedure; where an installed process skill or the user's instructions are stricter, they win.
 
-1. **Understand before acting.** Read the code, docs, and project skills the change touches, and list every place it must reach: callers, tests, fixtures, config, exports. For new or ambiguous work, confirm the intent and the smallest version that does the core job before building.
-2. **Smallest complete solution.** Stop at the first rung that holds: does it need to exist → already in the project (code, helper, component, project skill) → standard library or platform → installed dependency → one clear line → the minimum new code. Finish every part the change needs; small is not partial.
-3. **Never cut** validation at trust boundaries, data-loss handling, security, accessibility, or anything the user asked for.
-4. **Root cause before fixes.** Reproduce the bug, find its cause, and fix it once in the shared code. After two failed fixes, stop patching and re-investigate the assumption or the design.
-5. **Test what can break.** Non-trivial logic (a branch, loop, parser, money, security) leaves one small test, written first when practical and seen failing before it passes. Trivial changes need none.
+They hold for any kind of work: code, documents, media, design, data, research, operations. "Change" means whatever the task produces.
+
+1. **Understand before acting.** Read what the change touches, including the project's own instructions and briefs, and list the project's skill folders (`.claude/skills/`, `.agents/skills/`) for a skill that already covers the work. Then list every place it must reach: for code, callers, tests, config; for a document, every page that repeats the fact; for media, every version, cut, or language that shares the asset. For new or ambiguous work, confirm the intent and the smallest version that does the core job before building.
+2. **Smallest complete solution.** Stop at the first rung that holds: does it need to exist → already in the project (code, component, template, preset, asset, project skill) → a standard or built-in feature of the tool → an installed tool or dependency → one clear step → the minimum new work. Finish every part the change needs; small is not partial.
+3. **Never cut** validation at trust boundaries, protection against data loss (keep originals; write new versions instead of overwriting source files), security and privacy, accessibility, rights and licensing of material used, or anything the user asked for.
+4. **Root cause before fixes.** Reproduce the problem, find its cause, and fix it once at the source (the shared code, the template, the master file). After two failed fixes, stop patching and re-investigate the assumption or the approach.
+5. **Check what can break, and leave the check behind.** Anything that can be wrong in a way the user won't notice gets one concrete check, set up first when practical and seen failing before it passes. Where the work has a place to keep it, keep it: for code with a branch, loop, parser, money, or security, that is a small test file, even when the project has no test suite yet. A one-off command run in the terminal proves today's change but protects nothing later. Trivial changes need none. Pick the check from the table below.
 6. **Small verifiable steps.** Multi-step work is planned as steps that each end in a check.
-7. **Evidence before claims.** Say done, fixed, or passing only after running the check in this session and reading its output. If something was skipped or not verified, say so in one line.
-8. **Mark deliberate shortcuts** in code as `shortcut: <the limit>, <when to upgrade>` so they can be found later.
+7. **Evidence before claims.** Say done, fixed, or passing only after running the check in this session and looking at its actual output. If something was skipped or not verified, say so in one line.
+8. **Mark deliberate shortcuts** where the next person will find them (a code comment `shortcut: <the limit>, <when to upgrade>`, a note in the doc or project file) with the limit and when to revisit it.
+
+| Work | What counts as a check (principles 5 and 7) |
+| --- | --- |
+| Code | A test or assert for the changed logic; build, lint, or run the app path you touched |
+| Documents and copy | Every command or code sample runs as written; links resolve; facts match the source; language and length meet the brief |
+| Media (video, audio, image) | Probe duration, resolution, and loudness, **and** look at the picture: extract frames at the start, cut points, and end (or one contact sheet) into the session's scratch folder or a `review/` folder in the project, then open and view them. Stream metadata alone does not show a black, wrong, or cropped frame. Check captions are in sync. |
+| Design and UI | Render at the target sizes and open the screenshots: text fits, contrast, focus order, both themes if supported |
+| Data and analysis | Row counts and totals reconcile with the source; spot-check a few records by hand; numbers come from a script, not a model |
+| Research and answers | Open the primary sources you cite; note dates and versions; separate what you verified from what you inferred |
+| Operations and config | Dry run or plan first; confirm the effect afterwards; know the rollback |
+| Recurring model jobs | Use the head-chef skill if installed; otherwise a replay of real past inputs |
 
 ## 0. Decide whether to get involved
 
@@ -93,7 +106,7 @@ Treat a skill like code with a test. Before writing it, note the concrete failur
 
 Write useful researched guidance before using the approach, then read and apply it in the current task. Do not assume a new file has already been injected into context. Complete the original task and update the skill with observed corrections and verification results. If the implementation fails, retain the failure as a limitation or remove the disproven claim; do not promote it as a proven recipe.
 
-Validate frontmatter, matching folder/name, relative links, and actual referenced paths. Run the available skill validator when present. Verify any executable helper before depending on it. A format check alone is not a behavioral test. Add scripts or support files only when the technique needs them; no database, daemon, framework, or extra API subscription is required.
+Validate every skill you write before reporting it, however short. Run the available skill validator when present. Without one, check by hand: `name` matches the folder, lowercase letters, digits, and hyphens, at most 64 characters; `description` is at most 1024 characters and contains no `<` or `>` (write "to" instead of "->"); relative links and referenced paths exist. Verify any executable helper before depending on it. A format check alone is not a behavioral test. Add scripts or support files only when the technique needs them; no database, daemon, framework, or extra API subscription is required.
 
 ## 5. Advise on missing project skills
 

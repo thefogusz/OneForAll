@@ -48,6 +48,8 @@ This guide never names a model. Model lineups change faster than skills, so reso
 
 Drop anything marked deprecated, preview-only, or not available to this account. Never invent an ID or reuse one remembered from another conversation.
 
+If none of these sources can be read from the current session, don't stop at "unresolved". Use the host's documented tier aliases as a provisional mapping (on Claude Code: `haiku` = prep, `sonnet` = sous, `opus` = head chef), mark the card `tiers: provisional (aliases)`, and give the user the one command that lists the real models (e.g. `/model` on Claude Code) so the IDs can be pinned before any replay-proven step ships.
+
 **2. Rank by price, then by the vendor's own positioning.** Within one provider, list price per million tokens (input + output) is the most stable signal of tier: vendors price small/fast models low and flagships high. Break ties, or fill gaps when prices are hidden, with the vendor's description ("fast", "efficient" → lower; "most capable", "flagship", "frontier" → higher). Benchmarks are a tiebreaker only. A larger version number alone does not mean a higher tier.
 
 List price only sets the starting tiers. Once a replay has run, compare models by **measured cost per accepted output**: tokens actually used (including reasoning tokens) × price, plus retries and escalations, divided by outputs that passed the checks. A model that is cheap per token but thinks long, or fails checks often, can cost more than the tier above it.
@@ -87,7 +89,7 @@ Name the station in a comment wherever the model is set, so the next reader know
 
 The critic reviews a recipe, a prompt, or an output it did not write.
 
-**First, check what is connected.** Before choosing a critic, look for the other family's CLI with read-only commands only:
+**First, check what is connected.** Run this check whenever a recipe card is written or audited, not only when a review is about to happen: the commands are read-only and cheap, and the result belongs on the routing card. Look for the other family's CLI with read-only commands only:
 
 | Active host | Other family | Installed? | Signed in? |
 | --- | --- | --- | --- |
