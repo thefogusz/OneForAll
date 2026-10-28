@@ -66,6 +66,12 @@ The task you asked for remains the priority. Skills are created or updated only 
 
 You can also request discovery directly: "Which skills could help reduce repetitive work in this project?"
 
+## Model routing for recurring jobs
+
+When a task builds or audits something that calls a model over and over (a scheduled job, a pipeline, a multi-agent workflow), OneForAll follows a [routing guide](skills/oneforall/references/model-routing.md). The strongest model writes the recipe once, and each step then runs on the cheapest station that can do it: plain code, an optional classifier, then small, mid, and strong models. A cheaper model replaces the current one only after replaying real past inputs, and the change ships as a switch that can be reversed.
+
+The guide names no models. Each time, it reads the models the host currently offers, ranks them by price and the vendor's own positioning, and assigns the tiers from that ranking, so it keeps working after Claude or Codex ship new models. A new model triggers a replay check before a job switches to it. For review, it checks whether the other family's CLI (Codex or Claude Code) is installed and signed in, and offers to use it; it never installs or signs in on its own. If none is connected or you decline, it creates a fresh reviewer agent that sees only the output and the checks.
+
 ## Skill recommendations
 
 During research, OneForAll may find a third-party skill worth adding to the project. It can suggest it with a source link, the reason it would help, and any required tools or costs. Usually one recommendation is enough; it may offer up to three when there are useful alternatives.

@@ -14,6 +14,7 @@ Recorded on 2026-10-28. These notes distinguish completed checks from work still
 | Package structure | The controller and repository maintenance skill passed `quick_validate.py`. Local links and icon paths were checked. |
 | Execution in Claude Code | Not tested. Claude Code CLI was not available on the test machine. |
 | Other agents | Execution has not been tested. |
+| Model routing guide (2026-10-29) | Added `references/model-routing.md`. Frontmatter and relative links checked. Routing a real job and the fresh-reviewer fallback have not been tested on either agent. |
 
 ## Typo correction
 
