@@ -1,15 +1,28 @@
 ---
 name: oneforall
-description: Discover useful skills for project work when specialized guidance could help. Quietly assess capability gaps before fixes or new work; research and maintain project skills only when they add concrete value. Use when OneForAll is requested, not for casual chat or status updates.
+description: Work efficiently on every project task - understand first, smallest complete change, root cause before fixes, evidence before claims - and discover useful skills for project work when specialized guidance could help. Quietly assess capability gaps before fixes or new work; research and maintain project skills only when they add concrete value. Use when OneForAll is requested, not for casual chat or status updates.
 ---
 
 # OneForAll
 
-Help users discover useful skills they did not know existed. The agent is already capable; extra skills should remove a concrete difficulty, supply specialized knowledge, or make recurring project work easier.
+Make every project task efficient: do the work with a small set of proven principles, and help users discover useful skills they did not know existed. The agent is already capable; extra skills should remove a concrete difficulty, supply specialized knowledge, or make recurring project work easier.
 
 At the start of substantive project work, quietly assess whether additional guidance would help. The assessment is not a research obligation. Casual conversation, acknowledgments, progress questions, and tool calls within the same approach do not trigger this workflow. Respect explicit offline, read-only, disabled-OneForAll, and requested-research instructions.
 
 The user authorizes automatic maintenance of useful project skills by enabling this controller. That authorization does not require producing a skill for every task or expand authorization for external actions, dependencies, or paid services.
+
+## Work principles for every task
+
+These apply to every substantive task, whether or not a skill search happens. They adapt ideas from Superpowers and Ponytail; details and the reasoning behind each are in [work-principles.md](references/work-principles.md). When the full Superpowers or Ponytail skills are installed, use them for the detailed procedure; where an installed process skill or the user's instructions are stricter, they win.
+
+1. **Understand before acting.** Read the code, docs, and project skills the change touches, and list every place it must reach: callers, tests, fixtures, config, exports. For new or ambiguous work, confirm the intent and the smallest version that does the core job before building.
+2. **Smallest complete solution.** Stop at the first rung that holds: does it need to exist → already in the project (code, helper, component, project skill) → standard library or platform → installed dependency → one clear line → the minimum new code. Finish every part the change needs; small is not partial.
+3. **Never cut** validation at trust boundaries, data-loss handling, security, accessibility, or anything the user asked for.
+4. **Root cause before fixes.** Reproduce the bug, find its cause, and fix it once in the shared code. After two failed fixes, stop patching and re-investigate the assumption or the design.
+5. **Test what can break.** Non-trivial logic (a branch, loop, parser, money, security) leaves one small test, written first when practical and seen failing before it passes. Trivial changes need none.
+6. **Small verifiable steps.** Multi-step work is planned as steps that each end in a check.
+7. **Evidence before claims.** Say done, fixed, or passing only after running the check in this session and reading its output. If something was skipped or not verified, say so in one line.
+8. **Mark deliberate shortcuts** in code as `shortcut: <the limit>, <when to upgrade>` so they can be found later.
 
 ## 0. Decide whether to get involved
 
@@ -75,6 +88,8 @@ Include only:
 - **Procedure:** the useful technique adapted to existing project components, commands, inputs/outputs, and known failure conditions. Prefer existing helpers over new scripts.
 - **Verification:** a concrete check, expected result, and what is still untested. Label researched guidance as researched; mark behavior as tested only after observing the check succeed.
 - **Sources:** information sources and skill sources separately, URLs/revisions or relative local references, date actually checked, and what was adopted. Record negative search results or access failures honestly. Put long evidence in a linked `references/sources.md`; keep short evidence inline. Preserve only reusable lessons, not raw chat transcripts.
+
+Treat a skill like code with a test. Before writing it, note the concrete failure or wasted effort it should prevent (the baseline). After using it, check that the same situation now goes right. A skill with no baseline to fix is filler; skip it.
 
 Write useful researched guidance before using the approach, then read and apply it in the current task. Do not assume a new file has already been injected into context. Complete the original task and update the skill with observed corrections and verification results. If the implementation fails, retain the failure as a limitation or remove the disproven claim; do not promote it as a proven recipe.
 

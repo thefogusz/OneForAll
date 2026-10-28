@@ -4,7 +4,7 @@
 
 <h1 align="center">OneForAll</h1>
 <p align="center"><a href="README.md">English</a> | <a href="README.th.md">ภาษาไทย</a></p>
-<p align="center">ช่วย agent ค้นหาและปรับสกิลให้เหมาะกับโปรเจกต์ที่คุณกำลังทำ</p>
+<p align="center">ช่วย agent ทำงานทุก task อย่างมีประสิทธิภาพ และค้นหาและปรับสกิลให้เหมาะกับโปรเจกต์ที่คุณกำลังทำ</p>
 
 <p align="center">
   <a href="docs/setup.th.md">คู่มือติดตั้ง</a> ·
@@ -66,6 +66,21 @@ flowchart TD
 
 ถ้าอยากสำรวจสกิลโดยตรง ก็ขอได้เลย เช่น “มีสกิลอะไรช่วยลดงานซ้ำในโปรเจกต์นี้บ้าง”
 
+## หลักการทำงาน
+
+นอกจากหาสกิล OneForAll ยังให้หลักการสั้น ๆ 8 ข้อที่ agent ใช้กับงานจริงทุกงาน ปรับมาจาก [Superpowers](https://github.com/obra/superpowers) และ [Ponytail](https://github.com/dietrichgebert/ponytail):
+
+1. เข้าใจก่อนลงมือ: อ่านส่วนที่งานไปแตะ และไล่ให้ครบว่าการแก้ต้องไปถึงที่ไหนบ้าง
+2. ทางแก้ที่เล็กที่สุดแต่ครบ: ใช้ของที่โปรเจกต์มีอยู่แล้ว (โค้ด คอมโพเนนต์ สกิลของโปรเจกต์) ก่อนเขียนอะไรใหม่
+3. ห้ามตัดการตรวจข้อมูล การกันข้อมูลหาย ความปลอดภัย การเข้าถึง (accessibility) และสิ่งที่คุณสั่ง
+4. หาต้นเหตุก่อนแก้ ถ้าแก้สองรอบแล้วไม่หาย ให้ทบทวนใหม่แทนการปะต่อ
+5. logic ที่พังได้ ต้องมีเทสต์เล็ก ๆ อย่างน้อยหนึ่งตัว
+6. งานหลายขั้นให้แบ่งเป็นขั้นเล็ก ๆ ที่แต่ละขั้นมีการตรวจ
+7. จะบอกว่า "เสร็จ" ได้ต้องรันตรวจแล้ว และบอกด้วยว่าอะไรยังไม่ได้ตรวจ
+8. ทางลัดที่ตั้งใจใช้ ให้ทำเครื่องหมายไว้ในโค้ด จะได้ตามเจอทีหลัง
+
+ถ้าคุณใช้ Superpowers หรือ Ponytail อยู่แล้ว สกิลเต็มของมันยังใช้ได้ตามเดิม OneForAll จะทำตามรายละเอียดของสกิลเหล่านั้นและไม่ทำซ้ำ แหล่งที่มาและส่วนที่นำมาจากแต่ละตัวอยู่ใน[หลักการทำงาน](skills/oneforall/references/work-principles.md)
+
 ## สกิลคู่หู: head-chef
 
 repo นี้มีสกิลที่สองชื่อ [head-chef](skills/head-chef/SKILL.md) ดูแลด้านต้นทุนของเป้าหมายเดียวกัน คือทุกโปรเจกต์ได้สกิลที่เหมาะกับตัวเอง และทุกงานที่รันซ้ำใช้โมเดลที่ถูกที่สุดที่ยังทำงานได้ดี ทั้งสองตัวทำงานแยกกัน จะติดตั้งคู่กันหรือตัวเดียวก็ได้
@@ -116,7 +131,7 @@ OneForAll เป็นชุดคำสั่งใน `SKILL.md` ที่ใ�
 
 ## แนวคิดและแหล่งอ้างอิง
 
-OneForAll นำแนวคิดการค้นสกิลจาก [Vercel find-skills](https://github.com/vercel-labs/skills/blob/main/skills/find-skills/SKILL.md) และการเก็บบทเรียนที่ใช้ซ้ำได้จาก [AutoSkill](https://github.com/ECNU-ICALK/AutoSkill) มาประกอบกับแนวทางการเขียนสกิลของ [OpenAI](https://github.com/openai/skills) และ [Anthropic](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md)
+OneForAll ปรับหลักการทำงานมาจาก [Superpowers](https://github.com/obra/superpowers) และ [Ponytail](https://github.com/dietrichgebert/ponytail) นำแนวคิดการค้นสกิลจาก [Vercel find-skills](https://github.com/vercel-labs/skills/blob/main/skills/find-skills/SKILL.md) และการเก็บบทเรียนที่ใช้ซ้ำได้จาก [AutoSkill](https://github.com/ECNU-ICALK/AutoSkill) มาประกอบกับแนวทางการเขียนสกิลของ [OpenAI](https://github.com/openai/skills) และ [Anthropic](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md)
 
 เป็นการนำวิธีคิดมาใช้ในขั้นตอนของ OneForAll ไม่ต้องติดตั้งทุกโครงการข้างต้น รายละเอียดอยู่ใน [แหล่งอ้างอิง](skills/oneforall/references/research-sources.md) ส่วนโลโก้สร้างด้วย AI
 

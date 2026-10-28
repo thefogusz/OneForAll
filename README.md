@@ -4,7 +4,7 @@
 
 <h1 align="center">OneForAll</h1>
 <p align="center"><a href="README.md">English</a> | <a href="README.th.md">ภาษาไทย</a></p>
-<p align="center">Help your agent discover and adapt skills for the project you're working on.</p>
+<p align="center">Help your agent work efficiently on every task, and discover and adapt skills for the project you're working on.</p>
 
 <p align="center">
   <a href="docs/setup.md">Setup guide</a> ·
@@ -66,6 +66,21 @@ The task you asked for remains the priority. Skills are created or updated only 
 
 You can also request discovery directly: "Which skills could help reduce repetitive work in this project?"
 
+## Work principles
+
+Beyond finding skills, OneForAll gives the agent eight short principles for every substantive task, adapted from [Superpowers](https://github.com/obra/superpowers) and [Ponytail](https://github.com/dietrichgebert/ponytail):
+
+1. Understand before acting: read what the change touches and list every place it must reach.
+2. Smallest complete solution: reuse what the project already has (code, components, project skills) before writing anything new.
+3. Never cut validation, data-loss handling, security, accessibility, or what you asked for.
+4. Find the root cause before fixing; after two failed fixes, rethink instead of patching.
+5. Leave one small test for logic that can break.
+6. Plan multi-step work as small steps that each end in a check.
+7. Claim "done" only after running the check, and say what wasn't verified.
+8. Mark deliberate shortcuts in code so they can be found later.
+
+If you already use Superpowers or Ponytail, their full skills still apply; OneForAll follows them for the detail and doesn't duplicate them. Sources and what was adopted from each: [work principles](skills/oneforall/references/work-principles.md).
+
 ## Companion skill: head-chef
 
 This repository ships a second skill, [head-chef](skills/head-chef/SKILL.md), for the cost side of the same goal: every project gets the skills that fit it, and every recurring job runs on the cheapest model that does it well. The two are independent and can be installed together or separately.
@@ -116,7 +131,7 @@ Research needs the agent's web tools. If access is unavailable, the agent should
 
 ## Design sources
 
-OneForAll draws on skill discovery from [Vercel find-skills](https://github.com/vercel-labs/skills/blob/main/skills/find-skills/SKILL.md), reusable lessons from [AutoSkill](https://github.com/ECNU-ICALK/AutoSkill), and skill-authoring guidance from [OpenAI](https://github.com/openai/skills) and [Anthropic](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md).
+OneForAll adapts working principles from [Superpowers](https://github.com/obra/superpowers) and [Ponytail](https://github.com/dietrichgebert/ponytail), and draws on skill discovery from [Vercel find-skills](https://github.com/vercel-labs/skills/blob/main/skills/find-skills/SKILL.md), reusable lessons from [AutoSkill](https://github.com/ECNU-ICALK/AutoSkill), and skill-authoring guidance from [OpenAI](https://github.com/openai/skills) and [Anthropic](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md).
 
 These ideas inform OneForAll's workflow; you don't need to install all of those projects. Details are in the [research references](skills/oneforall/references/research-sources.md). The logo was generated with AI.
 

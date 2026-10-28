@@ -56,8 +56,11 @@ Codex บางชุดติดตั้งพบสกิลจาก `$CODEX
 <!-- oneforall:start -->
 ## OneForAll
 
-Before substantive project work, quietly assess whether current abilities
-and project guidance are sufficient. If they are, do the task directly.
+On substantive project work, follow the work principles in the installed
+oneforall skill: understand first, smallest complete change, root cause
+before fixes, evidence before claims. Quietly assess whether current
+abilities and project guidance are sufficient. If they are, do the task
+directly.
 Follow the installed oneforall skill when a concrete gap or a useful
 specialist workflow warrants discovery, or when I request skill research.
 On that route, research technical information and skills separately.
